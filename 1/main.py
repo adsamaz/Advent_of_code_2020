@@ -1,28 +1,30 @@
 import math
 
 arr = []
-with open('input.txt') as f:
+with open("1\input.txt") as f:
     arr = f.readlines()
 
 arr = list(map(int, arr))
 
-def findTwoNumbers(arr, goal):
+
+def findIncreasing(arr):
+    count = 0
+    for i, x in enumerate(arr[1:]):
+        if x > arr[i]:
+            count += 1
+    return count
+
+
+# Only need to compare at the first number of the window and the last number of the new window.
+# The two numbers in the middle are shared by both windows
+def findIncreasingThree(arr):
+    count = 0
     for i, x in enumerate(arr):
-        for y in arr[i:]:
-            if x + y == goal:
-                return (x, y)
-    return (0, 0)
-
-def findThreeNumbers(arr, goal):
-    for i, x in enumerate(arr):
-        foundX, foundY = findTwoNumbers(arr[:i], goal - x)
-        if foundX > 0 and foundY > 0:
-            return x * foundX * foundY
-
-print(findThreeNumbers(arr, 2020))
+        if i < 3:
+            continue
+        if x > arr[i - 3]:
+            count += 1
+    return count
 
 
-                
-
-
-
+print(findIncreasing(arr))

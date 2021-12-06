@@ -1,46 +1,42 @@
 import math
 
 arr = []
-with open('2/input.txt') as f:
+with open("2/input.txt") as f:
     arr = f.readlines()
 
 
-def findValidPassword1():
-    valid_count = 0
+def calcPosition(arr):
+    horizontal = 0
+    depth = 0
     for line in arr:
-        rule, letter, password = line.split(" ")
+        dir, value = line.split(" ")
 
-        lower, upper = map(int, rule.split("-"))
-        letter = letter[0]
+        if dir == "forward":
+            horizontal += int(value)
+        if dir == "down":
+            depth += int(value)
+        if dir == "up":
+            depth -= int(value)
 
-        nrTimes = password.count(letter)
-        if nrTimes >= lower and nrTimes <= upper:
-            valid_count += 1
-    return valid_count
+    return horizontal * depth
 
-def findValidPassword2():
-    valid_count = 0
+
+def calcPosition2(arr):
+    horizontal = 0
+    depth = 0
+    aim = 0
     for line in arr:
-        rule, letter, password = line.split(" ")
+        dir, value = line.split(" ")
 
-        lower, upper = map(int, rule.split("-"))
-        letter = letter[0]
+        if dir == "forward":
+            horizontal += int(value)
+            depth += aim * int(value)
+        if dir == "down":
+            aim += int(value)
+        if dir == "up":
+            aim -= int(value)
 
-        nrOccuring = 0
-        if password[lower-1] == letter:
-            nrOccuring += 1
-        if password[upper-1] == letter:
-            nrOccuring += 1
-        
-        if nrOccuring == 1:
-            valid_count += 1
-    return valid_count
-
-print(findValidPassword2())
+    return horizontal * depth
 
 
-
-                
-
-
-
+print(calcPosition2(arr))

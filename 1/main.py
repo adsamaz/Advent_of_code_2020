@@ -27,4 +27,4 @@ def findIncreasingThree(arr):
     return count
 
 
-print(findIncreasing(arr))
+print(findIncreasingThree(arr))

@@ -1,4 +1,7 @@
 {
   "python.pythonPath": "C:\\Python38\\python.exe",
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": false
 }

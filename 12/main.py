@@ -1,98 +1,59 @@
-import math   
-import copy
+import math
 
-# def turnRight(facing, deg):
-#     return facing + deg if facing + deg < 360 else (facing + deg) % 360
+input = []
+with open("12/input.txt") as f:
+    input = f.readlines()
 
-# def turnLeft(facing, deg):
-#     return facing - deg if facing - deg >= 0 else 360 + facing - deg
-
-# def getFacingDir(facing):
-#     if facing == 0:
-#         return [0, 1]
-#     elif facing == 90:
-#         return [1, 0]
-#     elif facing == 180:
-#         return [0, -1]
-#     elif facing == 270:
-#         return [-1, 0]
-
-# def move(instr, current, facing):
-#     key, dist = instr
-    
-#     if key == 'N':
-#         current[1] += dist
-#     elif key == 'E':
-#         current[0] += dist
-#     elif key == 'S':
-#         current[1] -= dist
-#     elif key == 'W':
-#         current[0] -= dist
-#     elif key == 'R':
-#         return turnRight(facing, dist)
-#     elif key == 'L':
-#         return turnLeft(facing, dist)
-#     elif key == 'F':
-#         direction = getFacingDir(facing)
-#         current[0] += direction[0] * dist
-#         current[1] += direction[1] * dist
-#     return facing
-
-def move(instr, current, waypoint):
-    key, dist = instr
-    print(instr, current, waypoint)
-    if key == 'N':
-        waypoint[1] += dist
-    elif key == 'E':
-        waypoint[0] += dist
-    elif key == 'S':
-        waypoint[1] -= dist
-    elif key == 'W':
-        waypoint[0] -= dist
-    elif key == 'R':
-        rotate(current, waypoint, -dist)
-    elif key == 'L':
-        rotate(current, waypoint, dist)
-    elif key == 'F':
-        for _ in range(dist):
-            relativeX = (waypoint[0] - current[0])
-            relativeY = (waypoint[1] - current[1])
-            current[0] += relativeX
-            current[1] += relativeY
-            waypoint[0] += relativeX
-            waypoint[1] += relativeY
-    
-
-def rotate(origin, point, angle):
-    """
-    Rotate a point counterclockwise by a given angle around a given origin.
-    """
-
-    angle = math.radians(angle)
-    ox, oy = origin
-    px, py = point
-
-    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-    point[0] = round(qx)
-    point[1] = round(qy)
-
-dirs = []
-with open('12/input.txt') as f:
-    while line := f.readline():
-        line = line.strip("\n")
-        dirs.append((line[0], int(line[1:])))
+input = [x.strip("\n") for x in input]
 
 
-startPoint = [0, 0]
-current = [0, 0]
-waypoint = [10, 1]
+def getStepsInDirection(grid, i, j, current, visited):
+    if i >= len(grid) or j >= len(grid[0]) or i < 0 or j < 0:
+        return 0
+
+    new = "a" if grid[i][j] == "S" else grid[i][j]
+
+    if new != "E":
+        if str(i) + str(j) in visited:
+            return 0
+
+    if new == "E":
+        return 1 if current == "y" or current == "z" else 0
+    if ord(new) <= ord(current) + 1:
+        valueFromDir = getStepsToE(grid, i, j, visited)
+        return valueFromDir + 1 if valueFromDir > 0 else 0
+    return 0
 
 
-for instr in dirs:
-    move(instr, current, waypoint)
+def getStepsToE(grid, i, j, visited):
+    current = "a" if grid[i][j] == "S" else grid[i][j]
+    # print(i, j, current)
+    visited[str(i) + str(j)] = True
 
-manhattan = (abs(current[0]) - startPoint[0]) + (abs(current[1]) - startPoint[1])
-print(manhattan)
+    dirs = list(
+        filter(
+            lambda x: x > 0,
+            [
+                getStepsInDirection(grid, i, j + 1, current, visited.copy()),
+                getStepsInDirection(grid, i, j - 1, current, visited.copy()),
+                getStepsInDirection(grid, i + 1, j, current, visited.copy()),
+                getStepsInDirection(grid, i - 1, j, current, visited.copy()),
+            ],
+        )
+    )
+    return 0 if len(dirs) == 0 else min(dirs)
 
 
+def getStart(grid):
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == "S":
+                return (i, j)
+
+
+start = getStart(input)
+
+print(input)
+steps = getStepsToE(input, *start, {})
+
+print(steps)

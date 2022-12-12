@@ -1,42 +1,64 @@
 import math
 
+
+def getPoints(opp, me):
+    if opp == "A":
+        if me == "X":
+            return 1 + 3
+        if me == "Y":
+            return 2 + 6
+        if me == "Z":
+            return 3 + 0
+    if opp == "B":
+        if me == "X":
+            return 1 + 0
+        if me == "Y":
+            return 2 + 3
+        if me == "Z":
+            return 3 + 6
+    if opp == "C":
+        if me == "X":
+            return 1 + 6
+        if me == "Y":
+            return 2 + 0
+        if me == "Z":
+            return 3 + 3
+
+
+def getPoints2(opp, outcome):
+    if opp == "A":
+        if outcome == "X":
+            return 3 + 0
+        if outcome == "Y":
+            return 1 + 3
+        if outcome == "Z":
+            return 2 + 6
+    if opp == "B":
+        if outcome == "X":
+            return 1 + 0
+        if outcome == "Y":
+            return 2 + 3
+        if outcome == "Z":
+            return 3 + 6
+    if opp == "C":
+        if outcome == "X":
+            return 2 + 0
+        if outcome == "Y":
+            return 3 + 3
+        if outcome == "Z":
+            return 1 + 6
+
+
 arr = []
-with open("2/input.txt") as f:
+with open("2\input.txt") as f:
     arr = f.readlines()
 
 
-def calcPosition(arr):
-    horizontal = 0
-    depth = 0
-    for line in arr:
-        dir, value = line.split(" ")
+obj = [(x.split(" ")[0], x.split(" ")[1].strip("\n")) for x in arr]
 
-        if dir == "forward":
-            horizontal += int(value)
-        if dir == "down":
-            depth += int(value)
-        if dir == "up":
-            depth -= int(value)
+sum = 0
+for round in range(len(obj)):
+    elem = obj[round]
+    sum += getPoints2(*elem)
 
-    return horizontal * depth
-
-
-def calcPosition2(arr):
-    horizontal = 0
-    depth = 0
-    aim = 0
-    for line in arr:
-        dir, value = line.split(" ")
-
-        if dir == "forward":
-            horizontal += int(value)
-            depth += aim * int(value)
-        if dir == "down":
-            aim += int(value)
-        if dir == "up":
-            aim -= int(value)
-
-    return horizontal * depth
-
-
-print(calcPosition2(arr))
+print(sum)

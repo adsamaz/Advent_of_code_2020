@@ -1,109 +1,92 @@
 import math
 
+
+def getPoints(opp, me):
+    if opp == "A":
+        if me == "X":
+            return 1 + 3
+        if me == "Y":
+            return 2 + 6
+        if me == "Z":
+            return 3 + 0
+    if opp == "B":
+        if me == "X":
+            return 1 + 0
+        if me == "Y":
+            return 2 + 3
+        if me == "Z":
+            return 3 + 6
+    if opp == "C":
+        if me == "X":
+            return 1 + 6
+        if me == "Y":
+            return 2 + 0
+        if me == "Z":
+            return 3 + 3
+
+
+def getPoints2(opp, outcome):
+    if opp == "A":
+        if outcome == "X":
+            return 3 + 0
+        if outcome == "Y":
+            return 1 + 3
+        if outcome == "Z":
+            return 2 + 6
+    if opp == "B":
+        if outcome == "X":
+            return 1 + 0
+        if outcome == "Y":
+            return 2 + 3
+        if outcome == "Z":
+            return 3 + 6
+    if opp == "C":
+        if outcome == "X":
+            return 2 + 0
+        if outcome == "Y":
+            return 3 + 3
+        if outcome == "Z":
+            return 1 + 6
+
+
+def findSameLetter(a, b):
+    for letter in a:
+        for letter2 in b:
+            if letter == letter2:
+                return letter
+
+
+def findSameLetter3(a, b, c):
+    for letter in a:
+        for letter2 in b:
+            for letter3 in c:
+                if letter == letter2 and letter2 == letter3:
+                    return letter
+
+
 arr = []
 with open("3/input.txt") as f:
     arr = f.readlines()
 
-# 1
-def calc(arr):
-    result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for line in arr:
-        for i, bit in enumerate(line):
+arr = [x.strip("\n") for x in arr]
+# comps = [(x[len(x) // 2 :], x[: len(x) // 2]) for x in arr]
 
-            if bit == "1":
-                result[i] += 1
-            if bit == "0":
-                result[i] -= 1
+letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+pointsMapper = {letters[v - 1]: v for v in range(1, 53)}
 
-    return result
-
-
-def calc_gamma(arr):
-    binaryString = ""
-    for num in arr:
-        if num > 0:
-            binaryString += "1"
-        if num < 0:
-            binaryString += "0"
-
-    return int(binaryString, 2)
-
-
-def calc_epsilon(arr):
-    binaryString = ""
-    for num in arr:
-        if num > 0:
-            binaryString += "0"
-        if num < 0:
-            binaryString += "1"
-
-    return int(binaryString, 2)
+# sum = 0
+# for sack in comps:
+#     letter = findSameLetter(*sack)
+#     sum += pointsMapper[letter]
 
 
 # 2
-def calcBitDensity(arr):
-    result = [0 for _ in arr[0]]
-    for line in arr:
-        for i, bit in enumerate(line):
+groups = [(arr[i], arr[i + 1], arr[i + 2]) for i in range(0, len(arr), 3)]
 
-            if bit == "1":
-                result[i] += 1
-            if bit == "0":
-                result[i] -= 1
-
-    return result
+sum = 0
+for sack in groups:
+    letter = findSameLetter3(*sack)
+    sum += pointsMapper[letter]
 
 
-def calc_gamma(arr):
-    binaryString = ""
-    for num in arr:
-        if num > 0:
-            binaryString += "1"
-        if num < 0:
-            binaryString += "0"
-
-    return int(binaryString, 2)
-
-
-def calc_epsilon(arr):
-    binaryString = ""
-    for num in arr:
-        if num > 0:
-            binaryString += "0"
-        if num < 0:
-            binaryString += "1"
-
-    return int(binaryString, 2)
-
-
-def getOGR(arr):
-    currentArr = arr.copy()
-    i = 0
-    while len(currentArr) > 1:
-        density = calcBitDensity(currentArr)
-
-        if density[i] >= 0:
-            currentArr = [line for line in currentArr if line[i] == "1"]
-        if density[i] < 0:
-            currentArr = [line for line in currentArr if line[i] == "0"]
-
-        i += 1
-    return int(currentArr[0], 2)
-
-
-def getCO2(arr):
-    currentArr = arr.copy()
-    i = 0
-    while len(currentArr) > 1:
-        density = calcBitDensity(currentArr)
-
-        if density[i] >= 0:
-            currentArr = [line for line in currentArr if line[i] == "0"]
-        if density[i] < 0:
-            currentArr = [line for line in currentArr if line[i] == "1"]
-
-        i += 1
-    return int(currentArr[0], 2)
-
-
-print(getCO2(arr) * getOGR(arr))
+print(sum)

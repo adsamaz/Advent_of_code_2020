@@ -1,96 +1,91 @@
 import math
 
-# uniqueParents = {}
 
-# def findBags(key, keymap):
-#     if key not in keymap.keys():
-#         return
+opts = []
+with open("7/input.txt") as f:
+    opts = f.readlines()
 
-#     #parents = 0
-#     for tupl in keymap[key]:
-#         uniqueParents[tupl[0]] = 1
-#         findBags(tupl[0], keymap)
-#         #parents += 1 + findBags(tupl[0], keymap)
-#     return
-        
+opts = [x.strip("\n") for x in opts]
+
+system = {"/": {}}
+currentPath = ["/"]
 
 
-# with open('7/input.txt') as f:
-#     keymap = {}
-#     while line := f.readline():
-        
-#         parent, childs = line.split('contain')
-#         parentKey = "".join(parent.split(" ")[:2])
+def getCurrentSubSystem(system, path):
+    # if len(path) == 1:
+    #     system = {"/": subSystem}
+    # else:
 
-#         childArray = []
-#         for child in childs.split(","):
-#             childItems = child.split(" ")
-#             #print(parentKey, childItems)
-#             number, childKey = childItems[1], "".join(childItems[2:4])
-#             if childKey in keymap.keys(): 
-                
-#                 keymap[childKey].append((parentKey, number))
-#             else:
-#                 #print(keymap)
-#                 keymap[childKey] = [(parentKey, number)]
-#                 #print(keymap)
-    
-
-# print(keymap)
-# key = "shinygold"
-# findBags(key, keymap)
+    curr = system[path[0]]
+    for p in path[1:]:
+        curr = curr[p]
+    return curr
 
 
-#uniqueChilds = {}
-
-def findBags(key, keymap):
-    if key not in keymap.keys():
-        return 1
-
-    childs = 1
-    for tupl in keymap[key]:
-        #uniqueParents[tupl[0]] = 1
-        #findBags(tupl[0], keymap)
-        print(tupl)
-        childs += tupl[1] * findBags(tupl[0], keymap)
-    
-    return childs
-        
-
-
-with open('7/input.txt') as f:
-    keymap = {}
-    while line := f.readline():
-        
-        parent, childs = line.split('contain')
-        parentKey = "".join(parent.split(" ")[:2])
-
-        childArray = []
-        for child in childs.split(","):
-            childItems = child.split(" ")
-            #print(parentKey, childItems)
-            if childItems[1] == "no":
-                continue
-
-            number, childKey = int(childItems[1]), "".join(childItems[2:4])
-            if parentKey in keymap.keys(): 
-                
-                keymap[parentKey].append((childKey, number))
+for i, opt in enumerate(opts):
+    if opt[0] == "$":
+        if opt[2:4] == "cd":
+            # print("cd")
+            if opt[5] == "/":
+                currentPath = ["/"]
+            elif opt[5:7] == "..":
+                currentPath.pop()
             else:
-                #print(keymap)
-                keymap[parentKey] = [(childKey, number)]
-                #print(keymap)
+                currentPath.append(opt[5:])
+
+        if opt[2:4] == "ls":
+            # print("ls")
+            objects = []
+            for obj in opts[i + 1 :]:
+                if (obj[0]) == "$":
+                    break
+                else:
+                    objects.append(obj)
+
+            for x in objects:
+                key = x[4:] if x[0] == "d" else x.split(" ")[1]
+                value = {} if x[0] == "d" else x.split(" ")[0]
+                subSystem = getCurrentSubSystem(system, currentPath)
+                subSystem[key] = value
+
+            # Ehh
+            # setCurrentSubSystem(system, currentPath, subSystem)
+    else:
+        continue
+
+globalTotal = []
 
 
-print(keymap)
-key = "shinygold"
-childs = findBags(key, keymap) - 1
-print(childs)
+# def getFileSize(sys):
+#     total = 0
+#     for key, value in sys.items():
+#         if type(value) is dict:
+#             dictSize = getFileSize(value)
+#             total += dictSize
+#         else:
+#             total += int(value)
+
+#     if total <= 100000:
+#         print("hej", total)
+#         globalTotal.append(total)
+#     return total
 
 
+# 2
+def getFileSize2(sys):
+    total = 0
+    for key, value in sys.items():
+        if type(value) is dict:
+            dictSize = getFileSize2(value)
+            total += dictSize
+        else:
+            total += int(value)
+
+    if total >= 30000000 - (70000000 - 46728267):
+        print("hej", total)
+        globalTotal.append(total)
+    return total
 
 
-                
-
-
-
+size = getFileSize2(system)
+print(size, min(globalTotal))

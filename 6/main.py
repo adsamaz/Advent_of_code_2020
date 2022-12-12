@@ -1,50 +1,34 @@
 import math
 
 
+string = ""
 with open("6/input.txt") as f:
-    fishes = list(map(int, f.readline().split(",")))
-
-fishMap = {num: fishes.count(num) for num in fishes}
-fishMap[0] = 0
-fishMap[6] = 0
-fishMap[7] = 0
-fishMap[8] = 0
-print(fishMap)
+    string = f.readline()
 
 
-# def getUpdatedFish(fish):
-#     if fish == 0:
-#         return [6, 8]
-#     return [fish - 1]
+def isDifferent(a, b, c, d):
+    if a == b or b == c or c == d or a == d or a == c or b == d:
+        return False
+    return True
 
 
-# def run1(fishes: list):
-#     for day in range(256):
-#         print(day)
-#         updatedFishes = []
-#         for fish in fishes:
-#             updatedFishes.extend(getUpdatedFish(fish))
-#         fishes = updatedFishes
-#     return fishes
+def isDifferentBig(arr):
+    for i, a in enumerate(arr):
+        for b in arr[:i] + arr[i + 1 :]:
+            if a == b:
+                return False
+    return True
 
 
-def updateFishMap(fishMap: "dict[int,int]"):
-    newMap = {}
-    for i in reversed(range(9)):
-        if i == 0:
-            newMap[6] += fishMap[0]
-            newMap[8] = fishMap[0]
-        else:
+# for i, x in enumerate(string):
+#     if isDifferent(*string[i : i + 4]):
+#         print(i + 4)
+#         break
 
-            newMap[i - 1] = fishMap[i]
-    return newMap
+# 2
+for i, x in enumerate(string):
+    if isDifferentBig(string[i : i + 14]):
+        print(i + 14)
+        break
 
-
-def run2(fishMap: "dict[int,int]"):
-    for day in range(256):
-        fishMap = updateFishMap(fishMap)
-    return fishMap
-
-
-updatedFishes = run2(fishMap)
-print(sum([val for val in updatedFishes.values()]))
+# print(string)
